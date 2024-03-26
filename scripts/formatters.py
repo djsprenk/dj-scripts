@@ -20,7 +20,7 @@ def bpm_format(spb):
     return round(60 / float(spb), 1)
 
 
-def seconds_to_hours_minutes_and_seconds(seconds):
+def seconds_to_hours_minutes_and_seconds(seconds, leading_hour=False):
     """
     Convert seconds to formatted hh:mm:ss string or empty
     """
@@ -32,10 +32,10 @@ def seconds_to_hours_minutes_and_seconds(seconds):
     return f"{h:d}:{m:02d}:{s:02d}"
 
 
-def seconds_to_minutes_and_seconds(time):
+def seconds_to_minutes_and_seconds(time, milliseconds=True):
     """Convert cue format ss.mm to MM:ss:mm format"""
     rounded_seconds = floor(float(time))
     minutes = floor(rounded_seconds / 60)
     seconds = rounded_seconds % 60
 
-    return f"{str(minutes).zfill(2)}:{str(seconds).zfill(2)}:00"
+    return f"{str(minutes).zfill(2)}:{str(seconds).zfill(2)}{':00' if milliseconds else ''}"
