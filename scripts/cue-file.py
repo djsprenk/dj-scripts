@@ -34,16 +34,14 @@ def find_song_from_database(database, file_name):
             return song
 
 
-def generate_cue_text_from_cues(song_data):
-    """Find cues in the song data and generate text in CUE file format"""
+def generate_cue_text_from_cues(cue_points):
+    """Create CUE file output for a list of cue points"""
     text_data = ""
 
     # Write Header
     text_data += f'PERFORMER "{DJ_NAME}"\n'
     text_data += f'TITLE "{set_title}"\n'
     text_data += f'FILE "{set_file}"\n'
-
-    cue_points = filter(cue_filter, song_data["Poi"])
 
     for cue in cue_points:
         cue_number = cue.get("@Num", "0").zfill(2)
@@ -86,8 +84,12 @@ if __name__ == "__main__":
         print(f"No set found in database for file {set_file}")
         exit(1)
 
+    # Find cue points for the set
+    cue_points = filter(cue_filter, song_data["Poi"])
+
+    # Generate timesheet in CUE file format
     print(f"Generating CUE file text for {len(song_data)} cue points ...")
-    cue_text = generate_cue_text_from_cues(song_data)
+    cue_text = generate_cue_text_from_cues(cue_points)
 
     # Write a CUE file, named after the original recorded file.
     output_file = f"{PROCESSED_FILES_DIR}/{set_title}.cue"
