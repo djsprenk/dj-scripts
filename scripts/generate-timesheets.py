@@ -1,0 +1,101 @@
+"""
+Given a set name, generate timesheets in selected formats
+
+Args: Set file name
+
+Outputs:
+- CUE file
+- YouTube chapter text file
+"""
+
+from os.path import basename, splitext
+import sys
+
+from constants import PROCESSED_FILES_DIR, VDJ_DB_FILE, DJ_NAME
+from utils import read_from_xml
+from formatters import cue_file_format, youtube_chapter_format
+
+
+def cue_filter(elem):
+    """Filter function for returning cue points"""
+    return elem.get("@Type") == "cue"
+
+
+def get_songs_from_database(database):
+    """Get a list of all songs from the database"""
+    return database["VirtualDJ_Database"]["Song"]
+
+
+def find_song_from_database(database, file_name):
+    """Find a matching song from the database by file name"""
+
+    songs = get_songs_from_database(database)
+
+    for song in songs:
+        if basename(song.get("@FilePath")) == file_name:
+            return song
+
+
+if __name__ == "__main__":
+
+    # Get set from args
+    if len(sys.argv) == 2:
+        set_file = sys.argv[1]
+        set_title = splitext(set_file)[0]
+    else:
+        print(f"Expected 1 arg: set file name")
+        exit(1)
+
+    # TODO - Make this configurable via command line args
+    output_formats = ["cue", "youtube"]
+
+    # Convert XML database dump to JSON
+    print(f"Reading data from {VDJ_DB_FILE} ...")
+    database = read_from_xml(VDJ_DB_FILE)
+
+    # Find sets from database dump
+    print(f"Searching for entry for {set_file} ...")
+    song_data = find_song_from_database(database, set_file)
+
+    if song_data is None:
+        print(f"No set found in database for file {set_file}")
+        exit(1)
+
+    # Package relevant metadata about the set
+    set_metadata = {
+        "dj_name": DJ_NAME,
+        "set_title": set_title,
+        "set_file": set_file,
+    }
+
+    # Find cue points for the set
+    cue_points = [*filter(cue_filter, song_data["Poi"])]
+    print(f"Found {len(cue_points)} POIs ...")
+
+    files = []
+
+    # Generate timesheets for each selected format
+    if "cue" in output_formats:
+        cue_file_name = f"{set_title}.cue"
+        print(f"Generating CUE sheet: {cue_file_name}")
+        cue_data = cue_file_format(cue_points, set_metadata)
+        files.append({"file_name": cue_file_name, "file_data": cue_data})
+
+    if "youtube" in output_formats:
+        youtube_chapters_file_name = f"{set_title}.txt"
+        print(f"Generating YouTube chapters: {youtube_chapters_file_name}")
+        youtube_chapters_text = youtube_chapter_format(cue_points, set_metadata)
+        files.append(
+            {
+                "file_name": youtube_chapters_file_name,
+                "file_data": youtube_chapters_text,
+            }
+        )
+
+    # Write files to the processed_files directory
+    for file in files:
+        output_file_path = f"{PROCESSED_FILES_DIR}/{file['file_name']}"
+
+        with open(output_file_path, "w") as output_file:
+            output_file.write(file["file_data"])
+            print(f"Wrote {output_file_path}")
