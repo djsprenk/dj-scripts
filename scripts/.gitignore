@@ -1,2 +1,2 @@
 # Don't track changes to constants, these will differ between individuals
-constants.py
+*constants.py
