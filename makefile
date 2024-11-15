@@ -6,14 +6,14 @@ help:  # Help
 	@echo "Available options: help, install, setup, develop, database, timesheets"
 
 install:  # Install Python requirements
-	pip install -r requirements.in
+	pip install -r requirements/requirements.in
 
 setup: install  # One-time setup including creating folder directories
 	mkdir -p vdj-export
 	mkdir -p processed-files
 
 develop: install setup  # Setup devlopment requirements
-	pip install -r development.in
+	pip install -r requirements/development.in
 
 format: develop  # Format files
 	black .
