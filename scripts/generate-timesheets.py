@@ -11,7 +11,7 @@ Outputs:
 from os.path import basename, splitext
 import sys
 
-from constants import PROCESSED_FILES_DIR, VDJ_DB_FILE, DJ_NAME
+from config import PROCESSED_FILES_DIR, VDJ_DB_FILE, DJ_NAME
 from utils import read_from_xml
 from formatters import cue_file_format, youtube_chapter_format
 

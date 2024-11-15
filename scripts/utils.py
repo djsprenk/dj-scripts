@@ -3,7 +3,7 @@
 import json
 import xmltodict
 
-from constants import VDJ_DB_FILE, JSON_DB_FILE
+from config import VDJ_DB_FILE, JSON_DB_FILE
 
 
 def read_json_file(file_path):
