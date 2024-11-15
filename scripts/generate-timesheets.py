@@ -17,6 +17,7 @@ from formatters import cue_file_format, youtube_chapter_format
 
 AVAILABLE_FORMATS = ["cue", "youtube"]
 
+
 def cue_filter(elem):
     """Filter function for returning cue points"""
     return elem.get("@Type") == "cue"
