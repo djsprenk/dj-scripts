@@ -8,22 +8,25 @@ Scripts I use for DJ tasks / management
 
 Set up and activate a virtual environment
 
-```
+```bash
 virtualenv venv
 source venv/bin/activate
 ```
 
-Install Python requirements into your virtual environment:
+Run install / setup scripts (install Python requirements, create required folders):
 
-```
-pip install -r requirements.in
+```bash
+make setup
 ```
 
 ### Add Your Info
 
-In `scripts/constants.py` modify `DJ_NAME` to be the DJ name you want used in CUE files, etc.
+Create a new file called `.env` in the root of the project (or rename and edit the sample [.env-sample](./.env-sample) to `.env`), modifying values below to match your specific paths / values):
 
-### Export Virtual DJ Database
+- `DJ_NAME`: your DJ name to add to processed files.
+- `VDJ_DB_BACKUP_DIR`: Path to your VirtualDJ backup directory. On MacOS, usually `/Users/{USER}/Documents/VirtualDJ/Backup`, on Windows, usually `C:\users\{USER}\VirtualDJ\Backup`.
+
+### Pulling data from VDJ
 
 These scripts rely on having access to a Database Backup from VirtualDJ (VDJ). To get a database backup:
 
@@ -31,26 +34,36 @@ These scripts rely on having access to a Database Backup from VirtualDJ (VDJ). T
 2. Click Database > Create Database Backup
 3. This should create a timestamped database backup ZIP in your `VirtualDJ > Backup` folder.
 
-Next, unzip and unpack the contents of your database export into a folder in this project called `vdj-export`. The scripts expect a `database.xml` file as an immediate child to this export directory.
+Next, run:
+
+```bash
+make database
+```
+
+This will unzip and unpack the contents of your database export into `{dj-scripts}/vdj-export` and convert that data to JSON (`{processed-files}/database.json`) for easier reading by Python.
 
 ## Available Scripts
 
-### CUE File
+### timesheets
 
-Given a set recorded with VirtualDJ having cues in the default VirtualDJ cue format (`Artist - Song Title`), create a CUE file with those songs and timestamps.
+Given a set recorded with VirtualDJ with cues in the default VirtualDJ cue format (`Artist - Song Title`), create a CUE file and YouTube chapter list with those songs and timestamps.
 
 ```bash
-python scripts/cue-file.py "{set file name}"
+make timesheets "{set file name}"
 ```
 
-Outputs a new file, `{set file name}.cue`, to `processed-files` directory.
+Outputs new files, `{set name}.cue` and `{set name}.txt`, to the `processed-files` directory.
 
 ## Developing
 
-Install development requirements:
+Install development requirements with:
 
-```
-pip install -r development.in
+```bash
+make develop
 ```
 
-Python files are formatted with `black`.
+Format files(with `black`) by running:
+
+```bash
+make format
+```
