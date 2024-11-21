@@ -27,8 +27,7 @@ youtube_chapters:  extract_vdj_data  # Create YouTube chapter format file with s
 cue_file:  extract_vdj_data  # Create CUE file with song timestamps
 	python scripts/cuefile.py "$(arg)"
 
-timesheets:  extract_vdj_data # Create timestamps for the given filepath in second args
-	python scripts/timesheets.py "$(arg)"
+timesheets:  extract_vdj_data youtube_chapters cue_file  # Add any timesheets make targets here to run together
 
 # Extract the second argument
 arg := $(wordlist 2, $(words $(MAKECMDGOALS)), $(MAKECMDGOALS))
