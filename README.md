@@ -37,7 +37,7 @@ These scripts rely on having access to a Database Backup from VirtualDJ (VDJ). T
 Next, run:
 
 ```bash
-make database
+make extract_vdj_data
 ```
 
 This will unzip and unpack the contents of your database export into `{dj-scripts}/vdj-export` and convert that data to JSON (`{processed-files}/database.json`) for easier reading by Python.
