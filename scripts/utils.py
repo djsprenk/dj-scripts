@@ -2,8 +2,7 @@
 
 import json
 import xmltodict
-
-from config import VDJ_DB_FILE, JSON_DB_FILE
+import zipfile
 
 
 def read_json_file(file_path):
@@ -50,3 +49,21 @@ def xml_to_json(xml_path, json_path):
     with open(json_path, "w") as json_file:
         json_file.write(json_data)
         json_file.close()
+
+
+def unzip_file(zip_path, extract_to):
+    # Unzip the file
+    with zipfile.ZipFile(zip_path, "r") as zip_ref:
+        zip_ref.extractall(extract_to)
+
+
+def get_latest_file_with_extension(dir_path, extension):
+    """Get most recent file from directory."""
+    files = list(dir_path.glob(f"*.{extension}"))
+
+    if not files:
+        raise FileNotFoundError(f"No {extension} files found in the directory.")
+
+    # Find the most recent zip file
+    most_recent_file = max(files, key=lambda p: p.stat().st_mtime)
+    return most_recent_file

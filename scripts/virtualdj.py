@@ -4,10 +4,15 @@ Running the script from the command line will convert XML database to JSON.
 """
 
 import json
-import zipfile
+from os.path import basename
 
 from config import JSON_DB_FILE, VDJ_DB_BACKUP_DIR, VDJ_DB_FILE, VDJ_EXPORT_DIR
-from utils import read_from_xml
+from utils import get_latest_file_with_extension, read_from_xml, unzip_file
+
+
+def cue_filter(elem):
+    """Filter function for returning cue points"""
+    return elem.get("@Type") == "cue"
 
 
 def database_to_json():
@@ -26,29 +31,26 @@ def database_to_json():
         json_file.close()
 
 
-def get_latest_file_with_extension(dir_path, extension):
-    """Get most recent file from directory."""
-    files = list(dir_path.glob(f"*.{extension}"))
-
-    if not files:
-        raise FileNotFoundError(f"No {extension} files found in the directory.")
-
-    # Find the most recent zip file
-    most_recent_file = max(files, key=lambda p: p.stat().st_mtime)
-    return most_recent_file
+def get_songs_from_database(database):
+    """Get a list of all songs from the database"""
+    return database["VirtualDJ_Database"]["Song"]
 
 
-def unzip_file(zip_path, extract_to):
-    # Unzip the file
-    with zipfile.ZipFile(zip_path, "r") as zip_ref:
-        zip_ref.extractall(extract_to)
+def find_song_from_database(database, file_name):
+    """Find a matching song from the database by file name"""
+
+    songs = get_songs_from_database(database)
+
+    for song in songs:
+        if basename(song.get("@FilePath")) == file_name:
+            return song
 
 
 if __name__ == "__main__":
+
+    # Get the latest VDJ database backup from the VDJ_DB_BACKUP_DIR, unzip, and convert to JSON
     print(f"Fetching latest VDJ database export from {VDJ_DB_BACKUP_DIR}")
-
     vdj_database_backup_zip = get_latest_file_with_extension(VDJ_DB_BACKUP_DIR, "zip")
-
     print(f"Found backup: {vdj_database_backup_zip.name}")
 
     unzip_path = VDJ_EXPORT_DIR

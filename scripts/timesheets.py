@@ -1,5 +1,5 @@
 """
-Given a set name, generate timesheets in selected formats
+Generate timesheets for all available formats.
 
 Args: Set file name
 
@@ -8,35 +8,16 @@ Outputs:
 - YouTube chapter text file
 """
 
-from os.path import basename, splitext
+from os.path import splitext
 import sys
 
 from config import PROCESSED_FILES_DIR, VDJ_DB_FILE, DJ_NAME
+from cuefile import cue_file_format
+from youtube import youtube_chapter_format
+from virtualdj import find_song_from_database, cue_filter
 from utils import read_from_xml
-from formatters import cue_file_format, youtube_chapter_format
 
 AVAILABLE_FORMATS = ["cue", "youtube"]
-
-
-def cue_filter(elem):
-    """Filter function for returning cue points"""
-    return elem.get("@Type") == "cue"
-
-
-def get_songs_from_database(database):
-    """Get a list of all songs from the database"""
-    return database["VirtualDJ_Database"]["Song"]
-
-
-def find_song_from_database(database, file_name):
-    """Find a matching song from the database by file name"""
-
-    songs = get_songs_from_database(database)
-
-    for song in songs:
-        if basename(song.get("@FilePath")) == file_name:
-            return song
-
 
 if __name__ == "__main__":
 

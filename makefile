@@ -18,11 +18,17 @@ develop: install setup  # Setup devlopment requirements
 format: develop  # Format files
 	black .
 
-database:  # Unzip and extract database info from a VDJ backup
-	python scripts/database.py
+extract_vdj_data:  # Unzip and extract database info from a VDJ backup
+	python scripts/virtualdj.py
 
-timesheets:  database # Create timestamps for the given filepath in second args
-	python scripts/generate-timesheets.py "$(arg)"
+youtube_timesheet:  extract_vdj_data  # Create YouTube chapter format file with song timestamps
+	python scripts/youtube.py "$(arg)"
+
+cue_file:  extract_vdj_data  # Create CUE file with song timestamps
+	python scripts/cuefile.py "$(arg)"
+
+timesheets:  extract_vdj_data # Create timestamps for the given filepath in second args
+	python scripts/timesheets.py "$(arg)"
 
 # Extract the second argument
 arg := $(wordlist 2, $(words $(MAKECMDGOALS)), $(MAKECMDGOALS))
