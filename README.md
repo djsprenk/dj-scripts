@@ -1,8 +1,8 @@
 # DJ Scripts
 
-Scripts I use for DJ tasks / management
+Scripts I use for DJ tasks / management.
 
-## Quickstart
+## Quick Start
 
 ### Install Requirements
 
@@ -44,15 +44,35 @@ This will unzip and unpack the contents of your database export into `{dj-script
 
 ## Available Scripts
 
-### timesheets
+### Generate YouTube Chapters comment
 
-Given a set recorded with VirtualDJ with cues in the default VirtualDJ cue format (`Artist - Song Title`), create a CUE file and YouTube chapter list with those songs and timestamps.
+Generate a YouTube comment containing chapters and timestamps for songs in a recorded set.
+
+```bash
+make youtube_chapters "{set file}"
+```
+
+This creates a new file in the `PROCESSED_FILES_DIR` called `{set file}.txt`.
+
+### Generate a CUE file
+
+Generate a CUE file containing chapters and timestamps for songs in a recorded set.
+
+```bash
+make cue_file "{set file}"
+```
+
+This creates a new file in the `PROCESSED_FILES_DIR` called `{set file}.txt`.
+
+### Generate Timesheets
+
+Generate all available timesheet formats for a given set.
 
 ```bash
 make timesheets "{set file name}"
 ```
 
-Outputs new files, `{set name}.cue` and `{set name}.txt`, to the `processed-files` directory.
+Outputs new files to the `PROCESSED_FILES_DIR` directory.
 
 ## Developing
 
