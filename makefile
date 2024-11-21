@@ -21,7 +21,7 @@ format: develop  # Format files
 extract_vdj_data:  # Unzip and extract database info from a VDJ backup
 	python scripts/virtualdj.py
 
-youtube_timesheet:  extract_vdj_data  # Create YouTube chapter format file with song timestamps
+youtube_chapters:  extract_vdj_data  # Create YouTube chapter format file with song timestamps
 	python scripts/youtube.py "$(arg)"
 
 cue_file:  extract_vdj_data  # Create CUE file with song timestamps
